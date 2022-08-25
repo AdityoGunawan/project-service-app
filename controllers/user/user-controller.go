@@ -94,6 +94,7 @@ func LoginUser(db *sql.DB, newUser entities.User) (int, string, string, error) {
 	if err != nil {
 		return -1, "", "", err
 	}
+	
 	if newUser.No_telepon == oldUser.No_telepon && newUser.Password == oldUser.Password {
 		login = "login sukses"
 		fmt.Println(login)
