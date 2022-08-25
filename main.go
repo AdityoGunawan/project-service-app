@@ -66,29 +66,18 @@ func main() {
 
 			case 2:
 				{
+					newUser := entities.User{}
 					fmt.Println("Masukan No Telepon")
-					fmt.Scanln(&nohp)
-					// norekening
-					loginUsers := entities.Users{}
-		fmt.Println("Masukkan Nomor Telepon Anda:")
-		fmt.Scanln(&loginUsers.No_telepon)
-		fmt.Println("Masukkan Password:")
-		fmt.Scanln(&loginUsers.Password)
+					fmt.Scanln(&newUser.No_telepon)
+					fmt.Println("Masukan Password")
+					fmt.Scanln(&newUser.Password)
 
-		rowAffect, err := user.LoginUsers(db, loginUsers)
-		if err != nil {
-			fmt.Println("Login Gagal", err)
-		} else {
-			if rowAffect < 1 {
-				fmt.Println("Nomor Telepon dan Password Anda Salah")
-			} else {
-			fmt.Println("Login Berhasil")
-			}
-		}
-
+					_, login, norek, _ := user.LoginUser(db, newUser)
+					nohp = login
+					norekening = norek
 				}
 			}
-		} else {
+		} else if nohp == "login sukses" {
 			switch pilihan {
 			case 3:
 				{
@@ -125,23 +114,23 @@ func main() {
 					}
 				}
 			case 5:
-				{
-					deleteUsers := entities.Users{}
-					fmt.Println("Masukkan Nomor Telepon:")
-					fmt.Scanln(&deleteUsers.No_telepon)
-			
-					rowAffect, err := user.DeleteUsers(db, deleteUsers)
-					if err != nil {
-						fmt.Println("Proses Gagal", err)
-						return
-					} else {
-						if rowAffect == 0 {
-							fmt.Println("Data Tidak Ditemukan!")
-						} else {
-							fmt.Println("Delete Berhasil")
-						}
-					}
-				}
+				// {
+				// 	deleteUsers := entities.User{}
+				// 	fmt.Println("Masukkan Nomor Telepon:")
+				// 	fmt.Scanln(&deleteUsers.No_telepon)
+
+				// 	rowAffect, err := user.DeleteUsers(db, deleteUsers)
+				// 	if err != nil {
+				// 		fmt.Println("Proses Gagal", err)
+				// 		return
+				// 	} else {
+				// 		if rowAffect == 0 {
+				// 			fmt.Println("Data Tidak Ditemukan!")
+				// 		} else {
+				// 			fmt.Println("Delete Berhasil")
+				// 		}
+				// 	}
+				// }
 			case 6:
 				{
 
@@ -182,7 +171,7 @@ func main() {
 					fmt.Println("Masukkan No Telepon :")
 					fmt.Scanln(&newUser.No_telepon)
 					if newUser.No_telepon == "" {
-						fmt.Println("wajib memasukkan ID User.")
+						fmt.Println("wajib memasukkan No Telepon.")
 						break
 					}
 

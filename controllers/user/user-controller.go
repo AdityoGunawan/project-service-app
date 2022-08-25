@@ -61,7 +61,7 @@ func UpdateDataUser(db *sql.DB, newUser entities.User) (int, error) {
 		return -1, errPrepare
 	}
 
-	fmt.Println(newUser)
+	// fmt.Println(newUser)
 	result, errStatement := statement.Exec(newUser.No_telepon, newUser.Nama, newUser.Password, newUser.Gender, newUser.Addres, newUser.No_rekening)
 	if errStatement != nil {
 		return -1, errStatement
@@ -79,18 +79,27 @@ func UpdateDataUser(db *sql.DB, newUser entities.User) (int, error) {
 func GetUser(db *sql.DB, nomortelepon string) (entities.User, error) {
 	newUser := entities.User{}
 	err := db.QueryRow("SELECT no_rekening, nomor_telepon, nama, gender, addres FROM users WHERE nomor_telepon = ?", nomortelepon).Scan(&newUser.No_rekening, &newUser.No_telepon, &newUser.Nama, &newUser.Gender, &newUser.Addres)
+	fmt.Println(newUser)
 	if err != nil {
 		return newUser, err
 	}
 	return newUser, nil
 }
 
-
-func LoginUsers(db *sql.DB, loginUsers entities.Users) (int, error) {
-	var login = "select * from users WHERE nomor_telepon=? and password=?"
-	_, errPrepare := db.Prepare(login)
-	if errPrepare != nil {
-		fmt.Println("Nomor Telepon atau Password yang Anda Masukkan Salah")
-		return 0, errPrepare
+//login
+func LoginUser(db *sql.DB, newUser entities.User) (int, string, string, error) {
+	oldUser := entities.User{}
+	var login string
+	err := db.QueryRow("SELECT no_rekening, nomor_telepon, password FROM users WHERE nomor_telepon = ?", newUser.No_telepon).Scan(&oldUser.No_rekening, &oldUser.No_telepon, &oldUser.Password)
+	if err != nil {
+		return -1, "", "", err
 	}
-	return 1, nil 
+	if newUser.No_telepon == oldUser.No_telepon && newUser.Password == oldUser.Password {
+		login = "login sukses"
+		fmt.Println(login)
+	} else {
+		login = "No Telepon Atau Password Salah"
+		fmt.Println(login)
+	}
+	return 0, login, oldUser.No_rekening, nil
+}
