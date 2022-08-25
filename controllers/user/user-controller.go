@@ -84,3 +84,13 @@ func GetUser(db *sql.DB, nomortelepon string) (entities.User, error) {
 	}
 	return newUser, nil
 }
+
+
+func LoginUsers(db *sql.DB, loginUsers entities.Users) (int, error) {
+	var login = "select * from users WHERE nomor_telepon=? and password=?"
+	_, errPrepare := db.Prepare(login)
+	if errPrepare != nil {
+		fmt.Println("Nomor Telepon atau Password yang Anda Masukkan Salah")
+		return 0, errPrepare
+	}
+	return 1, nil 
