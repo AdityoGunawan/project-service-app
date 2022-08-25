@@ -1,1 +1,4 @@
 .env
+db-service-app.sql
+views
+.vscode
