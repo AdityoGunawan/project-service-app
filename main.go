@@ -78,7 +78,7 @@ func main() {
 				}
 			}
 		} else if nohp == "login sukses" {
-			
+
 			switch pilihan {
 			case 3:
 				{
@@ -115,23 +115,9 @@ func main() {
 					}
 				}
 			case 5:
-				// {
-				// 	deleteUsers := entities.User{}
-				// 	fmt.Println("Masukkan Nomor Telepon:")
-				// 	fmt.Scanln(&deleteUsers.No_telepon)
+				{
 
-				// 	rowAffect, err := user.DeleteUsers(db, deleteUsers)
-				// 	if err != nil {
-				// 		fmt.Println("Proses Gagal", err)
-				// 		return
-				// 	} else {
-				// 		if rowAffect == 0 {
-				// 			fmt.Println("Data Tidak Ditemukan!")
-				// 		} else {
-				// 			fmt.Println("Delete Berhasil")
-				// 		}
-				// 	}
-				// }
+				}
 			case 6:
 				{
 
