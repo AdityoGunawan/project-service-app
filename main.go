@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"test-project/config"
+	"test-project/controllers/topup"
 	"test-project/controllers/transfer"
 	"test-project/controllers/user"
 	"test-project/entities"
@@ -17,6 +18,7 @@ func main() {
 
 	var loop bool = true
 	var nohp string
+	var validasi string
 	var norekening string
 	var pilihan int
 	for loop {
@@ -72,9 +74,10 @@ func main() {
 					fmt.Println("Masukan Password")
 					fmt.Scanln(&newUser.Password)
 
-					_, login, norek, _ := user.LoginUser(db, newUser)
+					_, login, norek, notelepon, _ := user.LoginUser(db, newUser)
 					nohp = login
 					norekening = norek
+					validasi = notelepon
 				}
 			}
 		} else if nohp == "login sukses" {
@@ -82,7 +85,20 @@ func main() {
 			switch pilihan {
 			case 3:
 				{
-					fmt.Println("masuk menu 3")
+					newUser := entities.User{}
+					// fmt.Println("Masukkan No Telepon :")
+					newUser.No_rekening = norekening
+					affected, err := user.ReadUser(db, newUser)
+					if err != nil {
+						fmt.Println(err.Error())
+					}
+
+					if affected.No_telepon != "" {
+						fmt.Println("====================")
+						fmt.Printf("No Rekening: %s\nNo Telepon: %s\nNama: %s\nPassword: %s\nSaldo: %v\nJenis Kelamin: %s\nAlamat: %s\n", affected.No_rekening, affected.No_telepon, affected.Nama, affected.Password, affected.Saldo, affected.Gender, affected.Addres)
+						break
+					}
+					fmt.Println("Data tidak ditemukan.")
 				}
 			case 4: //update
 				{
@@ -117,10 +133,42 @@ func main() {
 			case 5:
 				{
 
+					newUser := entities.User{}
+					newUser.No_rekening = norekening
+
+					affected, err := user.DeleteDataUser(db, newUser)
+					if err != nil {
+						fmt.Println(err.Error())
+					}
+
+					if affected > 0 {
+						fmt.Println("Data berhasil di hapus.")
+						break
+					} else {
+						fmt.Println("Tidak ada data yang dihapus.")
+						break
+					}
+
 				}
 			case 6:
 				{
+					newUser := entities.User{}
+					var nominal float64
+					fmt.Println("Masukan Nomor Telepon Anda :")
+					fmt.Scanln(&newUser.No_telepon)
+					if newUser.No_telepon != validasi {
+						fmt.Println("Nomor Telepon Anda Salah")
+						break
+					}
+					fmt.Println("Masukan Nominal topup :")
+					fmt.Scanln(&nominal)
 
+					_, err := topup.Topup(db, newUser, nominal, norekening)
+					if err != nil {
+						fmt.Println(err.Error())
+						break
+					}
+					fmt.Println("Topup Berhasil")
 				}
 			case 7:
 				{
@@ -146,11 +194,25 @@ func main() {
 				}
 			case 8:
 				{
-
+					result, err := topup.TopupHistory(db)
+					if err != nil {
+						fmt.Println(err.Error())
+					} else {
+						for _, v := range result {
+							fmt.Println("Nominal:", v.Nominal, "Date:", v.History)
+						}
+					}
 				}
 			case 9:
 				{
-
+					result, err := transfer.TransferHistory(db)
+					if err != nil {
+						fmt.Println(err.Error())
+					} else {
+						for _, v := range result {
+							fmt.Println("Penerima:", v.No_rekening_penerima, "Nominal:", v.Nominal_transfer, "Date:", v.History)
+						}
+					}
 				}
 			case 10:
 				{
