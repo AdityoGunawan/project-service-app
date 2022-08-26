@@ -81,6 +81,7 @@ func main() {
 				}
 			}
 		} else if nohp == "login sukses" {
+
 			switch pilihan {
 			case 3:
 				{
@@ -131,9 +132,8 @@ func main() {
 				}
 			case 5:
 				{
+
 					newUser := entities.User{}
-					// fmt.Println("Masukkan Guru ID")
-					// fmt.Scanln(&newGuru.ID)
 					newUser.No_rekening = norekening
 
 					affected, err := user.DeleteDataUser(db, newUser)
@@ -148,6 +148,7 @@ func main() {
 						fmt.Println("Tidak ada data yang dihapus.")
 						break
 					}
+
 				}
 			case 6:
 				{
