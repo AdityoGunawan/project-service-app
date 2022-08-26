@@ -81,7 +81,6 @@ func main() {
 				}
 			}
 		} else if nohp == "login sukses" {
-
 			switch pilihan {
 			case 3:
 				{
@@ -132,6 +131,10 @@ func main() {
 				}
 			case 5:
 				{
+					newUser := entities.User{}
+					// fmt.Println("Masukkan Guru ID")
+					// fmt.Scanln(&newGuru.ID)
+					newUser.No_rekening = norekening
 
 					newUser := entities.User{}
 					newUser.No_rekening = norekening
