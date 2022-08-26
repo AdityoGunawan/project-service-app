@@ -87,12 +87,12 @@ func GetUser(db *sql.DB, nomortelepon string) (entities.User, error) {
 }
 
 //login
-func LoginUser(db *sql.DB, newUser entities.User) (int, string, string, error) {
+func LoginUser(db *sql.DB, newUser entities.User) (int, string, string, string, error) {
 	oldUser := entities.User{}
 	var login string
 	err := db.QueryRow("SELECT no_rekening, nomor_telepon, password FROM users WHERE nomor_telepon = ?", newUser.No_telepon).Scan(&oldUser.No_rekening, &oldUser.No_telepon, &oldUser.Password)
 	if err != nil {
-		return -1, "", "", err
+		return -1, "", "", "", err
 	}
 	
 	if newUser.No_telepon == oldUser.No_telepon && newUser.Password == oldUser.Password {
@@ -102,5 +102,50 @@ func LoginUser(db *sql.DB, newUser entities.User) (int, string, string, error) {
 		login = "No Telepon Atau Password Salah"
 		fmt.Println(login)
 	}
-	return 0, login, oldUser.No_rekening, nil
+	return 0, login, oldUser.No_rekening, oldUser.No_telepon, nil
+}
+
+//read
+func ReadUser(db *sql.DB, newUser entities.User) (entities.User, error) {
+	oldUser := entities.User{}
+	err := db.QueryRow("SELECT no_rekening, nomor_telepon, nama, password, saldo, gender, addres FROM users WHERE no_rekening = ?", newUser.No_rekening).Scan(&oldUser.No_rekening, &oldUser.No_telepon, &oldUser.Nama, &oldUser.Password, &oldUser.Saldo, &oldUser.Gender, &oldUser.Addres)
+	fmt.Println(newUser.No_rekening)
+	if err != nil {
+		return oldUser, err
+	}
+	return oldUser, nil
+}
+
+//delete
+func DeleteDataUser(db *sql.DB, newUser entities.User) (int, error) {
+
+	err := db.QueryRow("SELECT no_rekening FROM users WHERE no_rekening = ?", newUser.No_rekening).Scan(&newUser.No_rekening)
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1, err
+	}
+
+	prepareStmt, err := db.Prepare("DELETE FROM users WHERE no_rekening = ?")
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1, err
+	}
+
+	results, err := prepareStmt.Exec(&newUser.No_rekening)
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1, err
+	}
+
+	affectedRows, err := results.RowsAffected()
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1, err
+	}
+
+	if affectedRows > 0 {
+		return int(affectedRows), nil
+	}
+
+	return 0, nil
 }
