@@ -74,6 +74,28 @@ func Transfer(db *sql.DB, newUser entities.User, nominal float64, norekening str
 		}
 		return int(row), nil
 	}
+
+
+}
+
+func TransferHistory(db *sql.DB) ([]entities.Transfer, error) {
+
+	result, errselect := db.Query("SELECT no_rekening_penerima,nominal_transfer, history_transfer FROM transfer")
+	if errselect != nil {
+		fmt.Println("error select", errselect.Error())
+		return nil, errselect
+	}
+	var dataTransfer []entities.Transfer
+	for result.Next() {
+		var rowTransfer entities.Transfer
+		errScan := result.Scan(&rowTransfer.No_rekening_penerima, &rowTransfer.Nominal_transfer, &rowTransfer.History)
+		if errScan != nil {
+			return nil, errScan
+		}
+		dataTransfer = append(dataTransfer, rowTransfer)
+	}
+	return dataTransfer, nil
+
 }
 
 func TransferHistory(db *sql.DB) ([]entities.Transfer, error) {

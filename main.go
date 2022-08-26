@@ -136,6 +136,9 @@ func main() {
 					// fmt.Scanln(&newGuru.ID)
 					newUser.No_rekening = norekening
 
+					newUser := entities.User{}
+					newUser.No_rekening = norekening
+
 					affected, err := user.DeleteDataUser(db, newUser)
 					if err != nil {
 						fmt.Println(err.Error())
@@ -148,6 +151,7 @@ func main() {
 						fmt.Println("Tidak ada data yang dihapus.")
 						break
 					}
+
 				}
 			case 6:
 				{
